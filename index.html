@@ -1,12 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html class="full-height">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>repl.it</title>
+    <title>Disease Simulation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="switch.css">  
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
+  <body class="full-height flex">
+    <div id="sim-area" class="two-thirds gray-background full-height">
+      <div id="sketch-container"></div>
+    </div>
+    <div id="params-area" class="one-third full-height">
+      <div id="params-form">
+        <h1>Parameters</h1>
+        <p class="form-label">Select a map:</p>
+        <select id="map" class="dropdown">
+          <option>Town</option>
+          <option>City</option>
+        </select>
+        <p class="form-label form-margin">Select a disease:</p>
+        <select id="disease" class="dropdown">
+          <option>Influenza A</option>
+          <option>Influenza B</option>
+          <option>COVID-19</option>
+        </select>
+        <h2 class="form-margin">Factors</h2>
+        <p class="form-label">Initial Population</p>
+        <input id="initialPopulation" class="form-input" type="number" value="1000">
+        <div class="switch-div form-margin">
+          <p class="form-label">Masks</p>
+          <label class="switch">
+            <input id="masks" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="switch-div form-margin">
+          <p class="form-label">Quarantine</p>
+          <label class="switch">
+            <input id="quarantine" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="switch-div form-margin">
+          <p class="form-label">Vaccine</p>
+          <label class="switch">
+            <input id="vaccine" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <h2 class="form-margin">Advanced</h2>
+        <p class="form-label">Vaccine Effectiveness (%)</p>
+        <input id="vaccEffectiveness" class="form-input" type="number" value="80.5">
+        <p class="form-label form-margin">Medical Care Capacity</p>
+        <input id="medCareCapacity" class="form-input" type="number" value="135">
+        <button id="beginSimButton" class="form-button">Begin Simulation</button>
+        <div class="btn-group">
+          <button class="left-button" id="toggleSimButton">Pause</button>
+          <button class="right-button" id="endSimButton">End</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

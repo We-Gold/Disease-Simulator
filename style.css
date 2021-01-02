@@ -1,0 +1,169 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  color: black;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+
+.gray-background {
+  background-color: #C4C4C4;
+}
+
+.two-thirds {
+  width: 67%;
+}
+
+.one-third {
+  width: 33%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+#sim-area {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+#params-form {
+  margin: auto;
+  margin-top: 10px;
+  margin-left: 30px;
+}
+
+p {
+  margin: 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 6.1vh; /* 4vw */
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 3.75vh; /* 2.5vw; */
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.form-label {
+  font-weight: 400;
+  font-size: 2.625vh; /* 1.75vw; */
+}
+
+.dropdown {
+  border-radius: 5px;
+  width: 90%;
+  font-weight: 300;
+  font-size: 2.625vh; /* 1.75vw; */
+  margin-top: 2px;
+}
+
+.form-input {
+  border-radius: 5px;
+  width: 90%;
+  font-weight: 300;
+  font-size: 2.625vh; /* 1.75vw; */
+  margin-top: 2px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.form-margin {
+  margin-top: 1vh;
+}
+
+.switch-div {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  width: 90%;
+}
+
+.form-button {
+  width: 90%;
+  padding: 2vh;
+  margin-top: 2.5vh;
+  font-weight: 300;
+  font-size: 2.8vh;
+  border-radius: 5px;
+  border-width: 0;
+  color: white;
+  background-color: #27A8F1;
+  transition: 0.3s;
+  -webkit-transition: 0.3s;
+}
+
+.form-button:hover {
+  cursor: pointer;
+  background-color: #2195D3;
+}
+
+.btn-group {
+  margin-top: 2.5vh;
+  display: none;
+}
+
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.btn-group .left-button {
+  width: 45%;
+  background-color: #FFD83D;
+  border: 0;
+  color: black;
+  padding: 2vh;
+  border-radius: 5px;
+  font-weight: 300;
+  font-size: 2.8vh;
+  cursor: pointer;
+  float: left; 
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  transition: 0.3s;
+  -webkit-transition: 0.3s;
+}
+
+.btn-group .left-button:hover {
+  background-color: rgb(214, 182, 53);
+}
+
+.btn-group .right-button {
+  width: 45%;
+  background-color: #F03A5F;
+  border: 0;
+  color: white;
+  padding: 2vh;
+  border-radius: 5px;
+  font-weight: 300;
+  font-size: 2.8vh;
+  cursor: pointer;
+  float: left; 
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  transition: 0.3s;
+  -webkit-transition: 0.3s;
+}
+
+.btn-group .right-button:hover {
+  background-color: rgb(206, 50, 81);
+}

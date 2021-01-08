@@ -29,8 +29,8 @@
           <option>COVID-19</option>
         </select>
         <h2 class="form-margin">Factors</h2>
-        <p class="form-label">Initial Population</p>
-        <input id="initialPopulation" class="form-input" type="number" value="1000">
+        <p class="form-label">Initial Infected Population (%)</p>
+        <input id="initialInfectedPercent" class="form-input" type="number" value="3">
         <div class="switch-div form-margin">
           <p class="form-label">Masks</p>
           <label class="switch">
@@ -65,6 +65,9 @@
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
+    <script src="classes/location.js"></script>
+    <script src="classes/schedule.js"></script>
+    <script src="classes/person.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

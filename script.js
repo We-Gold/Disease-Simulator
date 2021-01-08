@@ -2,7 +2,7 @@
 params = {
   "map": "Town",
   "disease": "Influenza A",
-  "initialPopulation": 1000,
+  "initialInfectedPercent": 3,
   "masks": true,
   // "maskDelay": 0,
   // "maskPercent": 90,
@@ -11,9 +11,20 @@ params = {
   // "quarPercent": 95,
   "vaccine": true,
   // "vaccDelay": 300,
+  // "vaccPercent": 99,
   "vaccEffectiveness": 85.63,
   "medCareCapacity": 135
 }
+
+// States of infection:
+// 0 - Not infected
+// 1 - infected
+// 2 - symptomatic
+// 3 - testing
+// 4 - quarantine
+// 5 - hospitalized
+// 6 - death
+// 7 - recovered
 
 let isRunning = false
 
@@ -35,12 +46,12 @@ document.getElementById("beginSimButton").addEventListener('click', ()=>{
 })
 
 document.getElementById("toggleSimButton").addEventListener('click', ()=>{
-  isRunning = !isRunning;
+  isRunning = !isRunning
   document.getElementById("toggleSimButton").innerText == "Resume" ? document.getElementById("toggleSimButton").innerText = "Pause" : document.getElementById("toggleSimButton").innerText = "Resume"
 })
 
 document.getElementById("endSimButton").addEventListener('click', ()=>{
-  isRunning = false;
+  isRunning = false
   // TODO do other stuff here to end the simulation
   show(document.getElementById("beginSimButton"))
   hide(document.querySelector(".btn-group"))

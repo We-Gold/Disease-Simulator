@@ -1,6 +1,16 @@
-function Person(id, params) {
+function Person(id, params, disease, map) {
   this.id = id
+
+  // On each global step iterate the step of each person
+  // If global vars work, may change this later.
+  this.currentStep = 0
+
+  this.iterStep = () => {this.currentStep++}
+
+  // Assume that these are already populated:
   this._params = params
+  this._disease = disease
+  this._map = map
 
   this.generatePerson = () => {
     // Generate age from normal distribution
@@ -8,23 +18,56 @@ function Person(id, params) {
     // Decide if they are infected to begin (small percentage of people) and set their state
     this.infected = Math.random() <= (0.01 * this._params.initialInfectedPercent)
     // If they are infected generate the timeframe for their infection
+    if(this.infected) {
+      this.timeToSymptoms = this.randn_bm(this._disease.symptomTime[0],this._disease.symptomTime[0], 1)
+      this.isSevereCase = Math.random() <= this._disease.hospitalizationRate
+    }
+    
+    // Find a way to make families and make them have the same homes
+    this.home = this.getRandomLocation("home")
 
-    // Set their current location
-      // Assign a specific home in the simulation
     // Based on age generate a daily and weekend schedule
     if(this.age <= 18) {
       // TODO tweak these with random changes to third locations and different entertainment places (or is randomly selected by different class)
-      this.weeklySchedule = Schedule("home", "school", "home")
-      this.weekendSchedule = Schedule("home", "entertainment", "home")
+      this.weeklySchedule = Schedule(this.home, this.getRandomLocation("school"), this.home)
+      this.weekendSchedule = Schedule(this.home, "entertainment", this.home)
     } else if(this.age <= 60) {
       // TODO tweak these with random changes to third locations and different entertainment places
-      this.weeklySchedule = Schedule("home", "job", "home") // 3rd maybe swapped with entertainment some days
-      this.weekendSchedule = Schedule("home", "entertainment", "entertainment")
+      this.weeklySchedule = Schedule(this.home, this.getRandomLocation("job"), this.home) // 3rd maybe swapped with entertainment some days
+      this.weekendSchedule = Schedule(this.home, this.getRandomLocation("entertainment"), this.getRandomLocation("entertainment"))
     } else if(this.age <= 85) {
       // TODO tweak these with random changes to third locations and different entertainment places
-      this.weeklySchedule = Schedule("home", "entertainment", "home") // 3rd maybe swapped with a different home (family) some days
-      this.weekendSchedule = Schedule("home", "entertainment", "home")
+      this.weeklySchedule = Schedule(this.home, this.getRandomLocation("entertainment"), this.home) // 3rd maybe swapped with a different home (family) some days
+      this.weekendSchedule = Schedule(this.home, this.getRandomLocation("entertainment"), this.home)
     }
+    // Set their current location
+    this.location = this.home
+    this.location.addPerson(this)
+  }
+
+  this.changeLocation = (nextLocation) => {
+    this.location.removePerson(this)
+    this.location = this.getNextLocation()
+    this.location.addPerson(this)
+  }
+
+  this.getNextLocation = () => {
+    // 1 week = 21 steps
+    // Make more efficient by counting
+    let step = (this.currentStep % 21)
+    let day = Math.ceil(step / 3)
+    let dayStep = step - ((day-1) * 3)
+    
+    // Starts at step 1 day 1
+    if(day <= 5) {
+      return this.weeklySchedule.getLocationByNumber(dayStep)
+    } else {
+      return this.weekendSchedule.getLocationByNumber(dayStep)
+    }
+  }
+
+  this.getRandomLocation = (type) => {
+    return this._map[type][Math.random() * this._map[type].length>>0]
   }
 
   this.randn_bm = (min, max, skew) => {

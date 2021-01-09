@@ -1,7 +1,7 @@
 // Create a model for storing configuration data
 params = {
   "map": "Town",
-  "disease": "Influenza A",
+  "disease": "Influenza",
   "initialInfectedPercent": 3,
   "masks": true,
   // "maskDelay": 0,
@@ -25,6 +25,13 @@ params = {
 // 5 - hospitalized
 // 6 - death
 // 7 - recovered
+
+// Units of time:
+// Time is measured in timesteps
+// 1 timestep = 8 hrs
+
+// Location types:
+// (quantity of each is determined by the map)
 
 let isRunning = false
 

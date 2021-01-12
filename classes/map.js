@@ -1,4 +1,4 @@
-function Map(name, locations, people, background, p5sketch) {
+function DiseaseMap(name, locations, people, background, p5sketch) {
   this.name = name
   // Dictionary for storing locations associated by their type
   this.locations = locations
@@ -9,9 +9,21 @@ function Map(name, locations, people, background, p5sketch) {
   this.p = p5sketch
 
   this.show = () => {
-    for(let loc in this.locations) {
+    // Show background (img or color)
+    this.p.background(this.background)
+    
+    // Show all locations
+    for(let loc of this.locations) {
       loc.show()
     }
-    // Show background (img or color)
+
+    // Show all people
+    for(let person of this.people) {
+      person.show()
+    }
+  }
+
+  this.step = () => {
+    
   }
 }

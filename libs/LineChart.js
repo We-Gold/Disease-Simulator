@@ -1,3 +1,5 @@
+// Need to add p. to all p5 functions
+
 function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange) {
   this.padding = 30
   this.data = data // [[]]

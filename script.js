@@ -66,19 +66,38 @@ document.getElementById("endSimButton").addEventListener('click', ()=>{
 
 // TODO Create a model for storing data about the diseases
 
-// Define details about the sketch
+// The location where the sketch will be created:
 let simArea = document.getElementById('sim-area')
 
+// Define sketch dimensions
 sk = {
   w: simArea.clientWidth,
   h: simArea.clientHeight
 }
 
+let map; // Store the main map class, which runs all operations
+let fr = 30 // Define the frame rate
+let secondsPerStep = 4 // Set how often a disease step will occur
+let frameCounter = 0 // Create a counter to track how many frame have occured
+
 // Instantiate and define the sketch
 let sketch = p => {
   p.setup = () => {
     p.createCanvas(sk.w, sk.h)
-    p.background('#C4C4C4')
+    map = new DiseaseMap("Town", [], [], "#C4C4C4", p)
+    p.frameRate(fr)
+  }
+
+  p.draw = () => {
+    map.show()
+
+    // Run one step
+    if(frameCounter >= fr * secondsPerStep) {
+      map.step()
+      frameCounter = 0
+    }
+
+    frameCounter++
   }
 }
 

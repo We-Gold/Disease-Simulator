@@ -1,5 +1,5 @@
 // Create a model for storing configuration data
-params = {
+let params = {
   "map": "Town",
   "disease": "Influenza",
   "initialInfectedPercent": 3,

@@ -3,6 +3,9 @@ function Disease(infectionRate, deathRate, recoveryTime, deathTime, symptomTime,
   this.infectionRate = infectionRate
   // Likelyhood of dying from the disease (should have an increase if the case is severe):
   this.deathRate = deathRate
+
+  // TODO use function approximations rather than ranges to represent time frames.
+
   this.recoveryTime = recoveryTime // [min, max]
   this.deathTime = deathTime // [min, max]
   this.symptomTime = symptomTime // [min, max]

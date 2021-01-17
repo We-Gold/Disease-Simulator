@@ -20,4 +20,12 @@ function Location(spreadRateBias, position, graphic) {
       this.infected.delete(person.id)
     }
   }
+
+  this.show = () => {
+    
+  }
+
+  this.step = () => {
+    
+  }
 }

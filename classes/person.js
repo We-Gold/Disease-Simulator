@@ -24,16 +24,16 @@ function Person(id, params, disease, map) {
     }
     
     // Find a way to make families and make them have the same homes
-    this.home = this.getRandomLocation("home")
+    this.home = this.getRandomLocation("homes")
 
     // Based on age generate a daily and weekend schedule
     if(this.age <= 18) {
       // TODO tweak these with random changes to third locations and different entertainment places (or is randomly selected by different class)
-      this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("school"), this.home)
+      this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("schools"), this.home)
       this.weekendSchedule = new Schedule(this.home, "entertainment", this.home)
     } else if(this.age <= 60) {
       // TODO tweak these with random changes to third locations and different entertainment places
-      this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("job"), this.home) // 3rd maybe swapped with entertainment some days
+      this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("jobs"), this.home) // 3rd maybe swapped with entertainment some days
       this.weekendSchedule = new Schedule(this.home, this.getRandomLocation("entertainment"), this.getRandomLocation("entertainment"))
     } else if(this.age <= 85) {
       // TODO tweak these with random changes to third locations and different entertainment places
@@ -67,7 +67,7 @@ function Person(id, params, disease, map) {
   }
 
   this.getRandomLocation = (type) => {
-    return this._map[type][Math.random() * this._map[type].length>>0]
+    return this._map.locations[type][Math.random() * this._map.locations[type].length>>0]
   }
 
   this.randn_bm = (min, max, skew) => {
@@ -82,5 +82,13 @@ function Person(id, params, disease, map) {
     num *= max - min; // Stretch to fill range
     num += min; // offset to min
     return num;
+  }
+
+  this.show = () => {
+
+  }
+
+  this.step = () => {
+    
   }
 }

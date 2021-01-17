@@ -64,8 +64,6 @@ document.getElementById("endSimButton").addEventListener('click', ()=>{
   hide(document.querySelector(".btn-group"))
 })
 
-// TODO Create a model for storing data about the diseases
-
 // The location where the sketch will be created:
 let simArea = document.getElementById('sim-area')
 
@@ -84,8 +82,26 @@ let frameCounter = 0 // Create a counter to track how many frame have occured
 let sketch = p => {
   p.setup = () => {
     p.createCanvas(sk.w, sk.h)
-    map = new DiseaseMap("Town", [], [], "#C4C4C4", p)
     p.frameRate(fr)
+
+    // Create the initial population list
+    let pop = []
+    // Create all of the locations
+    let locations = {}
+    for(let i = 0; i < locationTypes.length; i++) {
+      locations[locationTypes[i]] = []
+      for(let j = 0; j < maps[params.map].locations[locationTypes[i]]; j++) {
+        locations[locationTypes[i]].push(new Location(0, p.createVector(p.random(p.width), p.random(p.height)), 'fff'))
+      }
+    }
+
+    map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p)
+
+    // Create the initial population 
+    for(let i = 0; i < maps[params.map].initialPopulation; i++) {
+      pop.push(new Person(i, params, diseases[params.disease], map))
+      pop[i].generatePerson()
+    }
   }
 
   p.draw = () => {

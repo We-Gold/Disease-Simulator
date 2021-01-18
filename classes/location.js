@@ -8,7 +8,7 @@ function Location(spreadRateBias, position, graphic) {
 
   this.addPerson = (person) => {
     this.population.set(person.id, person)
-    if(person.infected) {
+    if(person.isInfected()) {
       this.infected.set(person.id, person)
     }
   }
@@ -16,7 +16,7 @@ function Location(spreadRateBias, position, graphic) {
   this.removePerson = (person) => {
     // Might be useful to use some kind of data structure to make this more efficient
     this.population.delete(person.id)
-    if(person.infected) {
+    if(person.isInfected()) {
       this.infected.delete(person.id)
     }
   }

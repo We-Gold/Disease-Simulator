@@ -41,9 +41,9 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
     // Print the number of infected
     let infected = 0
     for(let person of this.people) {
-      if(person.infected) infected++
+      if(person.isInfected()) infected++
     }
-    console.log(this.people.length)
-    console.log(infected)
+    // console.log(this.people.length)
+    // console.log(infected)
   }
 }

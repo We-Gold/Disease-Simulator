@@ -16,11 +16,18 @@ function Person(id, params, disease, map) {
     // Generate age from normal distribution
     this.age = this.randn_bm(5, 85, 1)
     // Decide if they are infected to begin (small percentage of people) and set their state
-    this.infected = Math.random() <= (0.01 * this._params.initialInfectedPercent)
+    this.infectionStage = (Math.random() <= (0.01 * this._params.initialInfectedPercent)) ? 1 : 0
+    // Create a list to store the information about the timeframe of their infection.
+    this.infectionTimeline = { // Times stored in timesteps
+      "symptomTime": -1,
+      "recoveryTime": -1, 
+      "deathTime": -1,
+      "isSevereCase": false
+    }
     // If they are infected generate the timeframe for their infection
-    if(this.infected) {
-      this.timeToSymptoms = this.randn_bm(this._disease.symptomTime[0],this._disease.symptomTime[0], 1)
-      this.isSevereCase = Math.random() <= this._disease.hospitalizationRate
+    if(this.isInfected()) {
+      // this.timeToSymptoms = this.randn_bm(this._disease.symptomTime[0],this._disease.symptomTime[0], 1)
+      this.beginInfection()
     }
     
     // Find a way to make families and make them have the same homes
@@ -43,6 +50,16 @@ function Person(id, params, disease, map) {
     // Set their current location
     this.location = this.home
     this.location.addPerson(this)
+  }
+
+  this.isInfected = () => {
+    // Return whether or not the person is currently infected.
+    return this.infectionStage < 6 && this.infectionStage > 0
+  }
+
+  this.beginInfection = () => {
+    this.infectionTimeline["symptomTime"] = this._disease.getRandomTime(this._disease.symptomTime)
+    this.infectionTimeline["isSevereCase"] = Math.random() <= this._disease.hospitalizationRate
   }
 
   this.changeLocation = (nextLocation) => {

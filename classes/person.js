@@ -1,12 +1,6 @@
 function Person(id, params, disease, map) {
   this.id = id
 
-  // On each global step iterate the step of each person
-  // If global vars work, may change this later.
-  this.currentStep = 0
-
-  this.iterStep = () => {this.currentStep++}
-
   // Assume that these are already populated:
   this._params = params
   this._disease = disease
@@ -14,11 +8,14 @@ function Person(id, params, disease, map) {
 
   this.generatePerson = () => {
     // Generate age from normal distribution
-    this.age = this.randn_bm(5, 85, 1)
+    // this.age = this.randn_bm(5, 85, 1)
+    // Generate age randomly
+    this.age = this.getRandomIntInRange(5,85)
     // Decide if they are infected to begin (small percentage of people) and set their state
     this.infectionStage = (Math.random() <= (0.01 * this._params.initialInfectedPercent)) ? 1 : 0
     // Create a list to store the information about the timeframe of their infection.
     this.infectionTimeline = { // Times stored in timesteps
+      "startStep": -1, // Current step at beginning of infection.
       "symptomTime": -1,
       "recoveryTime": -1, 
       "deathTime": -1,
@@ -58,11 +55,15 @@ function Person(id, params, disease, map) {
   }
 
   this.beginInfection = () => {
-    this.infectionTimeline["symptomTime"] = this._disease.getRandomTime(this._disease.symptomTime)
-    this.infectionTimeline["isSevereCase"] = Math.random() <= this._disease.hospitalizationRate
+    if(!this.isInfected()) {
+      this.infectionStage = 1
+      this.infectionTimeline["startStep"] = currentStep
+      this.infectionTimeline["symptomTime"] = this._disease.getRandomTime(this._disease.symptomTime)
+      this.infectionTimeline["isSevereCase"] = Math.random() <= this._disease.hospitalizationRate
+    }
   }
 
-  this.changeLocation = (nextLocation) => {
+  this.changeLocation = () => {
     this.location.removePerson(this)
     this.location = this.getNextLocation()
     this.location.addPerson(this)
@@ -71,7 +72,7 @@ function Person(id, params, disease, map) {
   this.getNextLocation = () => {
     // 1 week = 21 steps
     // Make more efficient by counting
-    let step = (this.currentStep % 21)
+    let step = (currentStep % 21)
     let day = Math.ceil(step / 3)
     let dayStep = step - ((day-1) * 3)
     
@@ -101,11 +102,25 @@ function Person(id, params, disease, map) {
     return num;
   }
 
+  this.getRandomIntInRange = (min, max) => {
+    return min + Math.floor(Math.random() * (max - min + 1))
+  }
+
+  this.updateInfectionState = () => {
+    if(this.isInfected()) {
+      // Begin having symptoms if enough time has passed.
+      if(this.infectionStage == 1) {
+        if(currentStep - this.infectionTimeline["startStep"] >= this.infectionTimeline["symptomTime"])
+      }
+    }
+  }
+
   this.show = () => {
 
   }
 
   this.step = () => {
-    
+    this.changeLocation()
+    this.updateInfectionState()
   }
 }

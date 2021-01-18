@@ -3,10 +3,10 @@ let maps = {
     "initialPopulation": 200,
     "locations": {
       // Later add graphics for each here or for all maps.
-      "homes": 90,
-      "jobs": 15,
+      "homes": 90, //90
+      "jobs": 15, //15
       "schools": 1,
-      "entertainment": 5
+      "entertainment": 5 //5
     },
     "background": "#C4C4C4"
   }

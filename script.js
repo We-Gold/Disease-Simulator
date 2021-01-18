@@ -77,6 +77,7 @@ let map; // Store the main map class, which runs all operations
 let fr = 30 // Define the frame rate
 let secondsPerStep = 4 // Set how often a disease step will occur
 let frameCounter = 0 // Create a counter to track how many frame have occured
+let currentStep = 0 // Create a counter track the current timestep
 
 // Instantiate and define the sketch
 let sketch = p => {
@@ -91,7 +92,7 @@ let sketch = p => {
     for(let i = 0; i < locationTypes.length; i++) {
       locations[locationTypes[i]] = []
       for(let j = 0; j < maps[params.map].locations[locationTypes[i]]; j++) {
-        locations[locationTypes[i]].push(new Location(0, p.createVector(p.random(p.width), p.random(p.height)), 'fff'))
+        locations[locationTypes[i]].push(new Location(j, 0, p.createVector(p.random(p.width), p.random(p.height)), 'fff', locationTypes[i], diseases[params.disease]))
       }
     }
 
@@ -109,6 +110,7 @@ let sketch = p => {
 
     // Run one step
     if(frameCounter >= fr * secondsPerStep) {
+      currentStep++
       map.step()
       frameCounter = 0
     }

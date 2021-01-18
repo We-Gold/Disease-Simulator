@@ -26,6 +26,12 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
   }
 
   this.step = () => {
+    // Update all people
+    // This order is important
+    for(let person of this.people) {
+      person.step()
+    }
+
     // Update all locations
     for(let locType of locationTypes) {
       for(let loc of this.locations[locType]) {
@@ -33,17 +39,12 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
       }
     }
 
-    // Update all people
-    for(let person of this.people) {
-      person.step()
-    }
-
     // Print the number of infected
     let infected = 0
     for(let person of this.people) {
       if(person.isInfected()) infected++
     }
-    // console.log(this.people.length)
-    // console.log(infected)
+    console.log(this.people.length)
+    console.log(infected)
   }
 }

@@ -16,10 +16,13 @@ function Person(id, params, disease, map) {
     // Create a list to store the information about the timeframe of their infection.
     this.infectionTimeline = { // Times stored in timesteps
       "startStep": -1, // Current step at beginning of infection.
+      "lastStep": -1,
       "symptomTime": -1,
       "recoveryTime": -1, 
       "deathTime": -1,
-      "isSevereCase": false
+      "testTime": 3,
+      "isSevereCase": false,
+      "willDie": false
     }
     // If they are infected generate the timeframe for their infection
     if(this.isInfected()) {
@@ -34,7 +37,7 @@ function Person(id, params, disease, map) {
     if(this.age <= 18) {
       // TODO tweak these with random changes to third locations and different entertainment places (or is randomly selected by different class)
       this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("schools"), this.home)
-      this.weekendSchedule = new Schedule(this.home, "entertainment", this.home)
+      this.weekendSchedule = new Schedule(this.home, this.getRandomLocation("entertainment"), this.home)
     } else if(this.age <= 60) {
       // TODO tweak these with random changes to third locations and different entertainment places
       this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("jobs"), this.home) // 3rd maybe swapped with entertainment some days
@@ -54,10 +57,19 @@ function Person(id, params, disease, map) {
     return this.infectionStage < 6 && this.infectionStage > 0
   }
 
+  this.isDead = () => {
+    return this.infectionStage == 6
+  }
+
+  this.isRecovered = () => {
+    return this.infectionStage == 7
+  }
+
   this.beginInfection = () => {
-    if(!this.isInfected()) {
+    if(!this.isInfected() && !this.isDead() && !this.isRecovered()) {
       this.infectionStage = 1
       this.infectionTimeline["startStep"] = currentStep
+      this.infectionTimeline["lastStep"] = currentStep
       this.infectionTimeline["symptomTime"] = this._disease.getRandomTime(this._disease.symptomTime)
       this.infectionTimeline["isSevereCase"] = Math.random() <= this._disease.hospitalizationRate
     }
@@ -75,7 +87,7 @@ function Person(id, params, disease, map) {
     let step = (currentStep % 21)
     let day = Math.ceil(step / 3)
     let dayStep = step - ((day-1) * 3)
-    
+
     // Starts at step 1 day 1
     if(day <= 5) {
       return this.weeklySchedule.getLocationByNumber(dayStep)
@@ -110,9 +122,46 @@ function Person(id, params, disease, map) {
     if(this.isInfected()) {
       // Begin having symptoms if enough time has passed.
       if(this.infectionStage == 1) {
-        if(currentStep - this.infectionTimeline["startStep"] >= this.infectionTimeline["symptomTime"])
+        if(currentStep - this.infectionTimeline["startStep"] >= this.infectionTimeline["symptomTime"]) {
+          this.infectionStage = 2
+          this.infectionTimeline["lastStep"] = currentStep
+        }
+      }
+      else if(this.infectionStage == 2) {
+        // Progress the infection if enough time has passed for testing.
+        if(currentStep - this.infectionTimeline["lastStep"] >= this.infectionTimeline["testTime"]) {
+          if(this.infectionTimeline["isSevereCase"]) {
+            this.infectionStage = 5
+          } else {
+            this.infectionStage = 4
+          }
+          this.infectionTimeline["lastStep"] = currentStep
+          // Decide whether or not the individual will die. This is currently indepentent from if their case is severe enough for hospitalization, but this may change.
+          this.infectionTimeline["willDie"] = Math.random() <= this._disease.deathRate
+
+          if(this.infectionTimeline["willDie"]) {
+            this.infectionTimeline["deathTime"] = this._disease.getRandomTime(this._disease.deathTime)
+          } else {
+            this.infectionTimeline["recoveryTime"] = this._disease.getRandomTime(this._disease.recoveryTime)
+          }
+        }
+      }
+      else if(this.infectionStage == 4 || this.infectionStage == 5) {
+        if(this.infectionTimeline["willDie"] && currentStep - this.infectionTimeline["lastStep"] >= this.infectionTimeline["deathTime"]) {
+          this.infectionStage = 6
+        }
+        else if(!this.infectionTimeline["willDie"] && currentStep - this.infectionTimeline["lastStep"] >= this.infectionTimeline["recoveryTime"]) {
+          this.infectionStage = 7
+        }
       }
     }
+  }
+
+  this.checkInfectionStages = (stages) => {
+    for(const s of stages) {
+      if(this.infectionStage == s) return true
+    }
+    return false
   }
 
   this.show = () => {
@@ -120,7 +169,7 @@ function Person(id, params, disease, map) {
   }
 
   this.step = () => {
-    this.changeLocation()
+    if(!this.checkInfectionStages([4,5,6])) this.changeLocation()
     this.updateInfectionState()
   }
 }

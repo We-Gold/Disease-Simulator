@@ -20,7 +20,7 @@ let params = {
 // 0 - Not infected
 // 1 - infected
 // 2 - symptomatic
-// 3 - testing
+// 3 - testing (may not be used)
 // 4 - quarantine
 // 5 - hospitalized
 // 6 - death
@@ -48,6 +48,7 @@ document.getElementById("beginSimButton").addEventListener('click', ()=>{
     params[key] = ["masks", "quarantine", "vaccine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
   }
   isRunning = true
+  initializeSimulation(_p)
   hide(document.getElementById("beginSimButton"))
   show(document.querySelector(".btn-group"))
 })
@@ -75,9 +76,33 @@ sk = {
 
 let map; // Store the main map class, which runs all operations
 let fr = 30 // Define the frame rate
-let secondsPerStep = 4 // Set how often a disease step will occur
+let secondsPerStep = 0.5 // Set how often a disease step will occur
 let frameCounter = 0 // Create a counter to track how many frame have occured
 let currentStep = 0 // Create a counter track the current timestep
+let _p = null // Create a pointer to the p5 sketch
+
+function initializeSimulation(p) {
+  // Reset the current step
+  currentStep = 0
+  // Create the initial population list
+  let pop = []
+  // Create all of the locations
+  let locations = {}
+  for(let i = 0; i < locationTypes.length; i++) {
+    locations[locationTypes[i]] = []
+    for(let j = 0; j < maps[params.map].locations[locationTypes[i]]; j++) {
+      locations[locationTypes[i]].push(new Location(j, 0, p.createVector(p.random(p.width), p.random(p.height)), 'fff', locationTypes[i], diseases[params.disease]))
+    }
+  }
+
+  map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p)
+
+  // Create the initial population 
+  for(let i = 0; i < maps[params.map].initialPopulation; i++) {
+    pop.push(new Person(i, params, diseases[params.disease], map))
+    pop[i].generatePerson()
+  }
+}
 
 // Instantiate and define the sketch
 let sketch = p => {
@@ -85,37 +110,24 @@ let sketch = p => {
     p.createCanvas(sk.w, sk.h)
     p.frameRate(fr)
 
-    // Create the initial population list
-    let pop = []
-    // Create all of the locations
-    let locations = {}
-    for(let i = 0; i < locationTypes.length; i++) {
-      locations[locationTypes[i]] = []
-      for(let j = 0; j < maps[params.map].locations[locationTypes[i]]; j++) {
-        locations[locationTypes[i]].push(new Location(j, 0, p.createVector(p.random(p.width), p.random(p.height)), 'fff', locationTypes[i], diseases[params.disease]))
-      }
-    }
+    _p = p
 
-    map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p)
-
-    // Create the initial population 
-    for(let i = 0; i < maps[params.map].initialPopulation; i++) {
-      pop.push(new Person(i, params, diseases[params.disease], map))
-      pop[i].generatePerson()
-    }
+    initializeSimulation(_p)
   }
 
   p.draw = () => {
     map.show()
 
-    // Run one step
-    if(frameCounter >= fr * secondsPerStep) {
-      currentStep++
-      map.step()
-      frameCounter = 0
-    }
+    if(isRunning){
+      // Run one step
+      if(frameCounter >= fr * secondsPerStep) {
+        currentStep++
+        map.step()
+        frameCounter = 0
+      }
 
-    frameCounter++
+      frameCounter++
+    }
   }
 }
 

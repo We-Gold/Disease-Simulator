@@ -8,6 +8,8 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
 
   this.p = p5sketch
 
+  // this.chart = new LineChart()
+
   this.show = () => {
     // Show background (img or color)
     this.p.background(this.background)
@@ -39,12 +41,26 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
       }
     }
 
+    this.outputInfo()
+  }
+
+  this.outputInfo = () => {
     // Print the number of infected
+    // TODO make this code a lot nicer.
     let infected = 0
+    let hasSymptoms = 0
+    let quarantined = 0
+    let recovered = 0
+    let dead = 0
+
     for(let person of this.people) {
-      if(person.isInfected()) infected++
+      if(person.isRecovered()) recovered++
+      else if(person.isDead()) dead++
+      else if(person.isInfected() && person.infectionStage == 4) quarantined++
+      else if(person.isInfected() && person.infectionStage == 2) hasSymptoms++
+      else if(person.isInfected()) infected++
     }
-    console.log(this.people.length)
-    console.log(infected)
+    console.log(`Current step: ${currentStep}`)
+    console.log(`Total: ${this.people.length} \nInfected: ${infected} \nSymptomatic: ${hasSymptoms} \nQuarantined: ${quarantined} \nRecovered: ${recovered} \nDead: ${dead}`)
   }
 }

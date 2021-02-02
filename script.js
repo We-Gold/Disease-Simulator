@@ -43,7 +43,7 @@ let hide = (el) => {
   el.style.display = "none"
 }
 
-document.getElementById("beginSimButton").addEventListener('click', ()=>{
+function beginSimButtonFunc() {
   for(var key of Object.keys(params)) {
     params[key] = ["masks", "quarantine", "vaccine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
   }
@@ -51,19 +51,24 @@ document.getElementById("beginSimButton").addEventListener('click', ()=>{
   initializeSimulation(_p)
   hide(document.getElementById("beginSimButton"))
   show(document.querySelector(".btn-group"))
-})
+}
 
-document.getElementById("toggleSimButton").addEventListener('click', ()=>{
+function toggleSimButtonFunc() {
   isRunning = !isRunning
   document.getElementById("toggleSimButton").innerText == "Resume" ? document.getElementById("toggleSimButton").innerText = "Pause" : document.getElementById("toggleSimButton").innerText = "Resume"
-})
+}
 
-document.getElementById("endSimButton").addEventListener('click', ()=>{
+function endSimButtonFunc() {
   isRunning = false
-  // TODO do other stuff here to end the simulation
   show(document.getElementById("beginSimButton"))
   hide(document.querySelector(".btn-group"))
-})
+}
+
+document.getElementById("beginSimButton").addEventListener('click', beginSimButtonFunc)
+
+document.getElementById("toggleSimButton").addEventListener('click', toggleSimButtonFunc)
+
+document.getElementById("endSimButton").addEventListener('click', endSimButtonFunc)
 
 // The location where the sketch will be created:
 let simArea = document.getElementById('sim-area')

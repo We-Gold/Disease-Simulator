@@ -1,6 +1,6 @@
-// TODO Need to add p. to all p5 functions
-
 function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketch) {
+  this.p = p5sketch
+
   this.padding = 30
   this.data = data // [[]]
   this.colors = colors
@@ -17,13 +17,11 @@ function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketc
   this.yRange = yRange // [min, max]
   this.hAxisLabelCount = 6
   this.vAxisLabelCount = 5
-  this.xLine = map(yRange[0], yRange[0], yRange[1], this.chartH, this.chartY)
-  this.yLine = map(xRange[0], xRange[0], xRange[1], this.chartX, this.chartW)
-  
-  this.p = p5sketch
+  this.xLine = this.p.map(yRange[0], yRange[0], yRange[1], this.chartH, this.chartY)
+  this.yLine = this.p.map(xRange[0], xRange[0], xRange[1], this.chartX, this.chartW)
 
   this.show = () => {
-    this.p.rectMode(CORNER)
+    this.p.rectMode(this.p.CORNER)
     this.p.fill(255)
     this.p.push()
     this.p.translate(x, y)
@@ -48,13 +46,13 @@ function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketc
           this.p.line(prev.x, prev.y, x, y)
           this.p.fill(0)
           this.p.stroke(0)
-          this.p.circle(prev.x, prev.y, 4)
+          // this.p.circle(prev.x, prev.y, 4)
           prev = this.p.createVector(x, y)
         }
 
         this.p.fill(0)
         this.p.stroke(0)
-        this.p.circle(x, y, 4)
+        // this.p.circle(x, y, 4)
       }
     }
 
@@ -62,11 +60,11 @@ function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketc
     for (let i = 0; i < this.hAxisLabelCount; i++) {
       let label = this.p.map(i, 0, this.hAxisLabelCount - 1, this.xRange[0], this.xRange[1])
       this.p.strokeWeight(0)
-      this.p.textAlign(CENTER)
+      this.p.textAlign(this.p.CENTER)
       this.p.textSize(10)
       this.p.fill(0)
       let x = this.p.map(label, this.xRange[0], this.xRange[1], this.chartX, this.chartX + this.chartW - this.padding)
-      this.p.text(round(label) + "", x, this.xLine + (this.padding * 0.7))
+      this.p.text(this.p.round(label) + "", x, this.xLine + (this.padding * 0.7))
       this.p.strokeWeight(2)
       this.p.line(x, this.xLine + 3, x, this.xLine - 3)
     }
@@ -75,17 +73,17 @@ function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketc
     for (let i = 0; i < this.vAxisLabelCount; i++) {
       let label = this.p.map(i, 0, this.vAxisLabelCount - 1, this.yRange[0], this.yRange[1])
       this.p.strokeWeight(0)
-      this.p.textAlign(RIGHT, CENTER)
+      this.p.textAlign(this.p.RIGHT, this.p.CENTER)
       this.p.textSize(10)
       this.p.fill(0)
       let y = (this.chartY + this.chartH) - this.p.map(label, this.yRange[0], this.yRange[1], this.chartY, this.chartY + this.chartH - this.padding)
-      this.p.text(round(label) + "", this.yLine - (this.padding * 0.25), y)
+      this.p.text(this.p.round(label) + "", this.yLine - (this.padding * 0.25), y)
       this.p.strokeWeight(2)
       this.p.line(this.yLine + 3, y, this.yLine - 3, y)
     }
 
     this.p.strokeWeight(0)
-    this.p.textAlign(LEFT, BOTTOM)
+    this.p.textAlign(this.p.LEFT, this.p.BOTTOM)
     this.p.textSize(12)
     
     let totalWidth = 0
@@ -101,15 +99,14 @@ function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketc
     }
     
     let startX = this.chartX + (this.chartW - this.padding - totalWidth)/2 
-        
+    
+    let startTracker = 0
+
     // Draw the line labels
     for (let i = 0; i < this.lineLabels.length; i++) {
       this.p.fill(this.colors[i])
-      let prevLen = 0
-      if (i > 0) {
-        prevLen = this.p.textWidth(this.lineLabels[i - 1]) + textPadding
-      }
-      this.p.text(this.lineLabels[i], startX + prevLen, this.chartY - 3)
+      this.p.text(this.lineLabels[i], startX + startTracker, this.chartY - 3)
+      startTracker += this.p.textWidth(this.lineLabels[i]) + textPadding
     }
     this.p.pop()
   }

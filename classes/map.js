@@ -8,11 +8,11 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
 
   this.p = p5sketch
 
-  // Healthy, Infected, Removed (dead or recovered)
+  // Uninfected, Infected, Removed (dead or recovered)
   this.chartData = {
     data: [[], [], []], // Stateful
     colors: ["#27A8F1", "#F03A5F", "#000"],
-    lineLabels: ["Healthy", "Infected", "Removed"],
+    lineLabels: ["Uninfected", "Infected", "Removed"],
     w: 200,
     h: 200,
     x: 20,
@@ -80,19 +80,19 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
   this.updateChartData = () => {
     // Hard coding the data being displayed in the chart
 
-    let healthy = 0
+    let uninfected = 0
     let infected = 0
     let removed = 0
 
     for(let person of this.people) {
       if(person.isInfected()) infected++
-      else if(person.isHealthy()) healthy++
+      else if(person.isUninfected()) uninfected++
       else if(person.isDead() || person.isRecovered()) removed++
     }
 
-    this.chartData.data[0].push(this.p.createVector(currentStep, healthy))
-    this.chartData.data[1].push(this.p.createVector(currentStep, infected))
-    this.chartData.data[2].push(this.p.createVector(currentStep, removed))
+    this.chartData.data[0].push(this.p.createVector(currentStep - 1, uninfected))
+    this.chartData.data[1].push(this.p.createVector(currentStep - 1, infected))
+    this.chartData.data[2].push(this.p.createVector(currentStep - 1, removed))
 
     if(currentStep >= this.chartData.xRange[1]) this.chartData.xRange[1]++
   }

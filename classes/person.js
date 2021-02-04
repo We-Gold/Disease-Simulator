@@ -64,6 +64,10 @@ function Person(id, params, disease, map) {
   this.isRecovered = () => {
     return this.infectionStage == 7
   }
+
+  this.isInactive = () => {
+    return this.isDead() || this.isRecovered() || this.infectionStage == 0
+  }
   
   this.isUninfected = () => {
     // Return whether or not this individual has ever been infected.

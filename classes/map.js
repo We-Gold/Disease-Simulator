@@ -19,60 +19,61 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
     y: 20,
     xRange: [0, 10], // Stateful
     yRange: [0, 200],
+    p5sketch: this.p
   }
 
-
-  this.chart = new LineChart(this.chartData.data, this.chartData.colors, this.chartData.lineLabels, this.chartData.w, this.chartData.h, this.chartData.x, this.chartData.y, this.chartData.xRange, this.chartData.yRange, this.p)
+  this.chart = new LineChart(this.chartData)
 
   this.show = () => {
     // Show background (img or color)
     this.p.background(this.background)
     
     // Show all locations
-    for(let locType of locationTypes) {
-      for(let loc of this.locations[locType]) {
-        loc.show()
-      }
-    }
+    this.showAllLocations()
 
     // Show all people
-    for(let person of this.people) {
-      person.show()
-    }
+    this.people.forEach(this.showPerson)
 
     this.chart.show()
   }
 
+  this.showAllLocations = () => {
+    locationTypes.forEach((type) => this.locations[type].forEach(this.showLocation))
+  }
+
+  this.showLocation = (location) => {
+    location.show()
+  } 
+
+  this.showPerson = (person) => {
+    person.show()
+  }
+
   this.step = () => {
     // Update all people
-    // This order is important
-    for(let person of this.people) {
-      person.step()
-    }
+    this.people.forEach(this.stepPerson)
 
     // Update all locations
-    for(let locType of locationTypes) {
-      for(let loc of this.locations[locType]) {
-        loc.step()
-      }
-    }
-
-    // this.outputInfo()
+    this.stepAllLocations()
 
     this.updateChartData()
 
     if(this.simulationIsComplete()) endSimButtonFunc()
   }
 
+  this.stepPerson = (person) => person.step()
+
+  this.stepAllLocations = () => {
+    locationTypes.forEach((type) => this.locations[type].forEach(this.stepLocation))
+  }
+
+  this.stepLocation = (location) => location.step()
+
   this.simulationIsComplete = () => {
     // Track the number of active members of the population
     let activePeople = this.people.length
 
-    for(let person of this.people) {
-      if(person.isDead() || person.isRecovered() || person.infectionStage == 0) {
-        activePeople--
-      }
-    }
+    this.people.filter((person) => person.isInactive()).forEach(() => {activePeople--})
 
     return activePeople == 0
   }
@@ -80,15 +81,9 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
   this.updateChartData = () => {
     // Hard coding the data being displayed in the chart
 
-    let uninfected = 0
-    let infected = 0
-    let removed = 0
-
-    for(let person of this.people) {
-      if(person.isInfected()) infected++
-      else if(person.isUninfected()) uninfected++
-      else if(person.isDead() || person.isRecovered()) removed++
-    }
+    let uninfected = this.countUninfected(this.people)
+    let infected = this.countInfected(this.people)
+    let removed = this.countRemoved(this.people)
 
     this.chartData.data[0].push(this.p.createVector(currentStep - 1, uninfected))
     this.chartData.data[1].push(this.p.createVector(currentStep - 1, infected))
@@ -97,23 +92,15 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
     if(currentStep >= this.chartData.xRange[1]) this.chartData.xRange[1]++
   }
 
-  // this.outputInfo = () => {
-  //   // Print the number of infected
-  //   // TODO make this code a lot nicer.
-  //   let infected = 0
-  //   let hasSymptoms = 0
-  //   let quarantined = 0
-  //   let recovered = 0
-  //   let dead = 0
+  this.countInfected = (people) => people.filter(this.isInfected).reduce((count) => count + 1, 0)
 
-  //   for(let person of this.people) {
-  //     if(person.isRecovered()) recovered++
-  //     else if(person.isDead()) dead++
-  //     else if(person.isInfected() && person.infectionStage == 4) quarantined++
-  //     else if(person.isInfected() && person.infectionStage == 2) hasSymptoms++
-  //     else if(person.isInfected()) infected++
-  //   }
-  //   console.log(`Current step: ${currentStep}`)
-  //   console.log(`Total: ${this.people.length} \nInfected: ${infected} \nSymptomatic: ${hasSymptoms} \nQuarantined: ${quarantined} \nRecovered: ${recovered} \nDead: ${dead}`)
-  // }
+  this.isInfected = (person) => person.isInfected()
+
+  this.countUninfected = (people) => people.filter(this.isUninfected).reduce((count) => count + 1, 0)
+
+  this.isUninfected = (person) => person.isUninfected()
+
+  this.countRemoved = (people) => people.filter(this.isRemoved).reduce((count) => count + 1, 0)
+
+  this.isRemoved = (person) => (person.isDead() || person.isRecovered())
 }

@@ -1,31 +1,31 @@
-function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketch) {
-  this.p = p5sketch
+function LineChart(params) {
+  this.p = params.p5sketch
 
   this.padding = 30
-  this.data = data // [[]]
-  this.colors = colors
-  this.lineLabels = lineLabels
-  this.w = w
-  this.h = h
-  this.chartW = w - this.padding
-  this.chartH = h - this.padding
-  this.x = x
-  this.y = y
+  this.data = params.data // [[]]
+  this.colors = params.colors
+  this.lineLabels = params.lineLabels
+  this.w = params.w
+  this.h = params.h
+  this.chartW = params.w - this.padding
+  this.chartH = params.h - this.padding
+  this.x = params.x
+  this.y = params.y
   this.chartX = this.padding
   this.chartY = this.padding
-  this.xRange = xRange // [min, max]
-  this.yRange = yRange // [min, max]
+  this.xRange = params.xRange // [min, max]
+  this.yRange = params.yRange // [min, max]
   this.hAxisLabelCount = 6
   this.vAxisLabelCount = 5
-  this.xLine = this.p.map(yRange[0], yRange[0], yRange[1], this.chartH, this.chartY)
-  this.yLine = this.p.map(xRange[0], xRange[0], xRange[1], this.chartX, this.chartW)
+  this.xLine = this.p.map(this.yRange[0], this.yRange[0], this.yRange[1], this.chartH, this.chartY)
+  this.yLine = this.p.map(this.xRange[0], this.xRange[0], this.xRange[1], this.chartX, this.chartW)
 
   this.show = () => {
     this.p.rectMode(this.p.CORNER)
     this.p.fill(255)
     this.p.push()
-    this.p.translate(x, y)
-    this.p.rect(0, 0, w, h)
+    this.p.translate(this.x, this.y)
+    this.p.rect(0, 0, this.w, this.h)
 
     this.p.fill(0)
     this.p.stroke(0)
@@ -33,11 +33,11 @@ function LineChart(data, colors, lineLabels, w, h, x, y, xRange, yRange, p5sketc
     this.p.line(this.chartX, this.xLine, this.chartW, this.xLine)
     this.p.line(this.yLine, this.chartY, this.yLine, this.chartH)
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       let prev = null;
-      for (let j = 0; j < data[i].length; j++) {
-        let x = this.p.map(data[i][j].x, this.xRange[0], this.xRange[1], this.chartX, this.chartX + this.chartW - this.padding)
-        let y = (this.chartY + this.chartH) - this.p.map(data[i][j].y, this.yRange[0], this.yRange[1], this.chartY, this.chartY + this.chartH - this.padding)
+      for (let j = 0; j < this.data[i].length; j++) {
+        let x = this.p.map(this.data[i][j].x, this.xRange[0], this.xRange[1], this.chartX, this.chartX + this.chartW - this.padding)
+        let y = (this.chartY + this.chartH) - this.p.map(this.data[i][j].y, this.yRange[0], this.yRange[1], this.chartY, this.chartY + this.chartH - this.padding)
 
         if (prev == null) {
           prev = this.p.createVector(x, y)

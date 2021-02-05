@@ -26,7 +26,6 @@ function Person(id, params, disease, map) {
     }
     // If they are infected generate the timeframe for their infection
     if(this.isInfected()) {
-      // this.timeToSymptoms = this.randn_bm(this._disease.symptomTime[0],this._disease.symptomTime[0], 1)
       this.beginInfection()
     }
     
@@ -75,7 +74,7 @@ function Person(id, params, disease, map) {
   }
 
   this.beginInfection = () => {
-    if(!this.isInfected() && !this.isDead() && !this.isRecovered()) {
+    if(this.isUninfected()) {
       this.infectionStage = 1
       this.infectionTimeline["startStep"] = currentStep
       this.infectionTimeline["lastStep"] = currentStep
@@ -166,11 +165,14 @@ function Person(id, params, disease, map) {
     }
   }
 
-  this.checkInfectionStages = (stages) => {
-    for(const s of stages) {
-      if(this.infectionStage == s) return true
-    }
-    return false
+  this.isHospitalized = () => this.infectionStage == 5
+
+  this.isQuarantined = () => this.infectionStage == 4
+
+  this.isMobile = () => {
+    if(this._params["quarantine"] && this.isQuarantined()) return false
+
+    return !this.isHospitalized() && !this.isDead()
   }
 
   this.show = () => {
@@ -178,7 +180,7 @@ function Person(id, params, disease, map) {
   }
 
   this.step = () => {
-    if(!this.checkInfectionStages([4,5,6])) this.changeLocation()
+    if(this.isMobile()) this.changeLocation()
     this.updateInfectionState()
   }
 }

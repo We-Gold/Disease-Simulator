@@ -3,13 +3,14 @@ let params = {
   "map": "Town",
   "disease": "Influenza",
   "initialInfectedPercent": 3,
-  "masks": true,
+  "masks": false,
   // "maskDelay": 0,
-  // "maskPercent": 90,
-  "quarantine": true,
+  "maskPercent": 85, // Percentage of people that wear masks
+  "maskEffectiveness": 93,
+  "quarantine": false,
   // "quarDelay": 0,
   // "quarPercent": 95,
-  "vaccine": true,
+  "vaccine": false,
   // "vaccDelay": 300,
   // "vaccPercent": 99,
   "vaccEffectiveness": 85.63,
@@ -43,10 +44,24 @@ let hide = (el) => {
   el.style.display = "none"
 }
 
-function beginSimButtonFunc() {
-  for(var key of Object.keys(params)) {
-    params[key] = ["masks", "quarantine", "vaccine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
+let saveParams = () => {
+  localStorage.setItem("parameters", JSON.stringify(params))
+}
+
+let getParams = () => {
+  if(localStorage.getItem("parameters")) {
+    params = JSON.parse(localStorage.getItem("parameters"))
   }
+}
+
+function beginSimButtonFunc() {
+  Object.keys(params).filter((key) => {
+    return !["maskEffectiveness", "maskPercent"].includes(key)}).forEach((key) => {
+      params[key] = ["masks", "quarantine", "vaccine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
+  })
+
+  saveParams()
+
   isRunning = true
   initializeSimulation(_p)
   hide(document.getElementById("beginSimButton"))
@@ -96,7 +111,7 @@ function initializeSimulation(p) {
   for(let i = 0; i < locationTypes.length; i++) {
     locations[locationTypes[i]] = []
     for(let j = 0; j < maps[params.map].locations[locationTypes[i]]; j++) {
-      locations[locationTypes[i]].push(new Location(j, 0, p.createVector(p.random(p.width), p.random(p.height)), 'fff', locationTypes[i], diseases[params.disease]))
+      locations[locationTypes[i]].push(new Location(j, 0, p.createVector(p.random(p.width), p.random(p.height)), 'fff', locationTypes[i], diseases[params.disease], params))
     }
   }
 
@@ -109,6 +124,18 @@ function initializeSimulation(p) {
   }
 }
 
+let updateHTMLWithParams = () => {
+  Object.keys(params).filter((key) => {
+    return !["maskEffectiveness", "maskPercent"].includes(key)}).forEach((key) => {
+      if(["masks", "quarantine", "vaccine"].includes(key)) {
+        document.getElementById(key).checked = params[key]
+      }
+      else {
+        document.getElementById(key).value = params[key]
+      } 
+  })
+}
+
 // Instantiate and define the sketch
 let sketch = p => {
   p.setup = () => {
@@ -117,7 +144,11 @@ let sketch = p => {
 
     _p = p
 
+    getParams()
+    updateHTMLWithParams()
+
     initializeSimulation(_p)
+
   }
 
   p.draw = () => {

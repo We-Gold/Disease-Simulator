@@ -18,7 +18,7 @@ let params = {
   // "vaccPercent": 99,
   "vaccEffectiveness": 85.63,
   "medCareCapacity": 135,
-  "graphMode": "UIR"
+  "graphMode": "SIR"
 }
 
 // States of infection:

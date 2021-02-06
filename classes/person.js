@@ -68,13 +68,13 @@ function Person(id, params, disease, map) {
     return this.isDead() || this.isRecovered() || this.infectionStage == 0
   }
   
-  this.isUninfected = () => {
+  this.isSusceptible = () => {
     // Return whether or not this individual has ever been infected.
     return this.infectionStage == 0
   }
 
   this.beginInfection = () => {
-    if(this.isUninfected()) {
+    if(this.isSusceptible()) {
       this.infectionStage = 1
       this.infectionTimeline["startStep"] = currentStep
       this.infectionTimeline["lastStep"] = currentStep

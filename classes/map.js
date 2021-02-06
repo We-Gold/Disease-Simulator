@@ -11,7 +11,7 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
   this.graphMode = graphMode // UIR, HID
 
   this.lineLabels = {
-    "UIR": ["Uninfected", "Infected", "Removed"],
+    "SIR": ["Susceptible", "Infected", "Removed"],
     "HID": ["Healthy", "Infected", "Dead"]
   }
 
@@ -90,12 +90,8 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
 
     let data = []
 
-    if(this.graphMode == "UIR") data = this.getUIRData()
+    if(this.graphMode == "SIR") data = this.getSIRData()
     else data = this.getHIDData()
-
-    const healthy = this.countHealthy(this.people)
-    const infected = this.countInfected(this.people)
-    const dead = this.countDead(this.people)
 
     this.pushChartData(data)
 
@@ -116,9 +112,9 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
     ]
   }
 
-  this.getUIRData = () => {
+  this.getSIRData = () => {
     return [
-      this.countUninfected(this.people),
+      this.countSusceptible(this.people),
       this.countInfected(this.people),
       this.countRemoved(this.people)
     ]
@@ -132,9 +128,9 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
 
   this.isHealthy = (person) => (person.isUninfected() || person.isRecovered())
 
-  this.countUninfected = (people) => people.filter(this.isUninfected).reduce((count) => count + 1, 0)
+  this.countSusceptible = (people) => people.filter(this.isSusceptible).reduce((count) => count + 1, 0)
 
-  this.isUninfected = (person) => person.isUninfected()
+  this.isSusceptible = (person) => person.isSusceptible()
 
   this.countDead = (people) => people.filter(this.isDead).reduce((count) => count + 1, 0)
 

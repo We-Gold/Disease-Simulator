@@ -18,7 +18,7 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
     x: 20,
     y: 20,
     xRange: [0, 10], // Stateful
-    yRange: [0, 200],
+    yRange: [0, maps[this.name]["initialPopulation"]],
     p5sketch: this.p
   }
 
@@ -81,9 +81,9 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
   this.updateChartData = () => {
     // Hard coding the data being displayed in the chart
 
-    let uninfected = this.countUninfected(this.people)
-    let infected = this.countInfected(this.people)
-    let removed = this.countRemoved(this.people)
+    const uninfected = this.countUninfected(this.people)
+    const infected = this.countInfected(this.people)
+    const removed = this.countRemoved(this.people)
 
     this.chartData.data[0].push(this.p.createVector(currentStep - 1, uninfected))
     this.chartData.data[1].push(this.p.createVector(currentStep - 1, infected))

@@ -30,16 +30,17 @@ function Location(id, spreadRateBias, position, graphic, type, disease, params) 
   }
 
   this.step = () => {
-    // Need to figure if the objects are being changed or not (reference or value)
-    const popKeys = this.shuffle([...this.population.keys()])
+    const infectionRate = this.disease.infectionRate / this.mean(this.disease.symptomTime) 
 
-    const newInfectedCount = Math.ceil(this.infected.size * this.disease.infectionRate * this.getMaskFactor())
+    const chanceOfBeingInfected = Math.ceil(this.infected.size * infectionRate * this.getMaskFactor()) / 100
 
     // Infect those who have been exposed (random)
-    for(let i = 0; i < newInfectedCount && popKeys.length >= newInfectedCount; i++) {
-      this.population.get(popKeys[i]).beginInfection()
-    }
+    this.population.forEach((person) => {
+      if(Math.random() <= chanceOfBeingInfected) person.beginInfection()
+    })
   }
+
+  this.mean = (list) => list.reduce((count, current) => count + current, 0)/list.length
 
   this.getMaskFactor = () => {
     if(this.params["masks"]) return 1 - (this.getMaskPercent() * this.getMaskEffectiveness())

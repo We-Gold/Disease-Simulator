@@ -83,18 +83,20 @@ function Person(id, params, disease, map) {
     }
   }
 
-  this.changeLocation = () => {
+  this.goToNextLocation = () => this.goToLocation(this.getNextLocation())
+
+  this.goToLocation = (location) => {
     this.location.removePerson(this)
-    this.location = this.getNextLocation()
+    this.location = location
     this.location.addPerson(this)
   }
 
   this.getNextLocation = () => {
     // 1 week = 21 steps
     // Make more efficient by counting
-    let step = (currentStep % 21)
-    let day = Math.ceil(step / 3)
-    let dayStep = step - ((day-1) * 3)
+    const step = (currentStep % 21)
+    const day = Math.ceil(step / 3)
+    const dayStep = step - ((day-1) * 3)
 
     // Starts at step 1 day 1
     if(day <= 5) {
@@ -180,7 +182,11 @@ function Person(id, params, disease, map) {
   }
 
   this.step = () => {
-    if(this.isMobile()) this.changeLocation()
+    if(this.isMobile()) this.goToNextLocation()
+    else this.goHome()
+    
     this.updateInfectionState()
   }
+
+  this.goHome = () => this.goToLocation(this.home)
 }

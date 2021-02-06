@@ -17,7 +17,8 @@ let params = {
   // "vaccDelay": 300,
   // "vaccPercent": 99,
   "vaccEffectiveness": 85.63,
-  "medCareCapacity": 135
+  "medCareCapacity": 135,
+  "graphMode": "UIR"
 }
 
 // States of infection:
@@ -59,7 +60,7 @@ let getParams = () => {
 
 function beginSimButtonFunc() {
   Object.keys(params).filter((key) => {
-    return !["maskEffectiveness", "maskPercent"].includes(key)}).forEach((key) => {
+    return !["maskEffectiveness", "maskPercent", "graphMode"].includes(key)}).forEach((key) => {
       params[key] = ["masks", "quarantine", "vaccine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
   })
 
@@ -118,7 +119,7 @@ function initializeSimulation(p) {
     }
   }
 
-  map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p)
+  map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p, params.graphMode)
 
   // Create the initial population 
   for(let i = 0; i < maps[params.map].initialPopulation; i++) {
@@ -129,7 +130,7 @@ function initializeSimulation(p) {
 
 let updateHTMLWithParams = () => {
   Object.keys(params).filter((key) => {
-    return !["maskEffectiveness", "maskPercent"].includes(key)}).forEach((key) => {
+    return !["maskEffectiveness", "maskPercent", "graphMode"].includes(key)}).forEach((key) => {
       if(["masks", "quarantine", "vaccine"].includes(key)) {
         document.getElementById(key).checked = params[key]
       }

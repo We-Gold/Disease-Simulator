@@ -142,6 +142,7 @@ function Person(id, params, disease, map) {
         if(currentStep - this.infectionTimeline["lastStep"] >= this.infectionTimeline["testTime"]) {
           if(this.infectionTimeline["isSevereCase"]) {
             this.infectionStage = 5
+            this.hospital = this.getRandomLocation("hospitals")
           } else {
             this.infectionStage = 4
           }
@@ -183,10 +184,13 @@ function Person(id, params, disease, map) {
 
   this.step = () => {
     if(this.isMobile()) this.goToNextLocation()
+    else if(this.isHospitalized()) this.goToAHospital()
     else this.goHome()
     
     this.updateInfectionState()
   }
 
   this.goHome = () => this.goToLocation(this.home)
+
+  this.goToAHospital = () => this.goToLocation(this.hospital)
 }

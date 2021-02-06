@@ -1,4 +1,4 @@
-function DiseaseMap(name, locations, people, background, p5sketch) {
+function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UIR") {
   this.name = name
   // Dictionary for storing locations associated by their type
   this.locations = locations
@@ -8,11 +8,18 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
 
   this.p = p5sketch
 
-  // Uninfected, Infected, Removed (dead or recovered)
+  this.graphMode = graphMode // UIR, HID
+
+  this.lineLabels = {
+    "UIR": ["Uninfected", "Infected", "Removed"],
+    "HID": ["Healthy", "Infected", "Dead"]
+  }
+
+  // Healthy, Infected, Dead
   this.chartData = {
     data: [[], [], []], // Stateful
     colors: ["#27A8F1", "#F03A5F", "#000"],
-    lineLabels: ["Uninfected", "Infected", "Removed"],
+    lineLabels: this.lineLabels[this.graphMode],
     w: 200,
     h: 200,
     x: 20,
@@ -81,24 +88,57 @@ function DiseaseMap(name, locations, people, background, p5sketch) {
   this.updateChartData = () => {
     // Hard coding the data being displayed in the chart
 
-    const uninfected = this.countUninfected(this.people)
-    const infected = this.countInfected(this.people)
-    const removed = this.countRemoved(this.people)
+    let data = []
 
-    this.chartData.data[0].push(this.p.createVector(currentStep - 1, uninfected))
-    this.chartData.data[1].push(this.p.createVector(currentStep - 1, infected))
-    this.chartData.data[2].push(this.p.createVector(currentStep - 1, removed))
+    if(this.graphMode == "UIR") data = this.getUIRData()
+    else data = this.getHIDData()
+
+    const healthy = this.countHealthy(this.people)
+    const infected = this.countInfected(this.people)
+    const dead = this.countDead(this.people)
+
+    this.pushChartData(data)
 
     if(currentStep >= this.chartData.xRange[1]) this.chartData.xRange[1]++
+  }
+
+  this.pushChartData = (data) => {
+    this.chartData.data[0].push(this.p.createVector(currentStep - 1, data[0]))
+    this.chartData.data[1].push(this.p.createVector(currentStep - 1, data[1]))
+    this.chartData.data[2].push(this.p.createVector(currentStep - 1, data[2]))
+  }
+
+  this.getHIDData = () => {
+    return [
+      this.countHealthy(this.people),
+      this.countInfected(this.people),
+      this.countDead(this.people)
+    ]
+  }
+
+  this.getUIRData = () => {
+    return [
+      this.countUninfected(this.people),
+      this.countInfected(this.people),
+      this.countRemoved(this.people)
+    ]
   }
 
   this.countInfected = (people) => people.filter(this.isInfected).reduce((count) => count + 1, 0)
 
   this.isInfected = (person) => person.isInfected()
 
+  this.countHealthy = (people) => people.filter(this.isHealthy).reduce((count) => count + 1, 0)
+
+  this.isHealthy = (person) => (person.isUninfected() || person.isRecovered())
+
   this.countUninfected = (people) => people.filter(this.isUninfected).reduce((count) => count + 1, 0)
 
   this.isUninfected = (person) => person.isUninfected()
+
+  this.countDead = (people) => people.filter(this.isDead).reduce((count) => count + 1, 0)
+
+  this.isDead = (person) => person.isDead()
 
   this.countRemoved = (people) => people.filter(this.isRemoved).reduce((count) => count + 1, 0)
 

@@ -32,7 +32,9 @@ function Location(id, spreadRateBias, position, graphic, type, disease, params) 
   this.step = () => {
     const infectionRate = this.disease.infectionRate / this.mean(this.disease.symptomTime) 
 
-    const chanceOfBeingInfected = Math.ceil(this.infected.size * infectionRate * this.getMaskFactor()) / 100
+    const chanceOfBeingInfected = Math.round(this.infected.size * infectionRate * this.getMaskFactor() * 10) / 1000
+
+    // const chanceOfBeingInfected = Math.ceil(this.infected.size * infectionRate * this.getMaskFactor()) / 100
 
     // Infect those who have been exposed (random)
     this.population.forEach((person) => {

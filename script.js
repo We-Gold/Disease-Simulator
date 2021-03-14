@@ -5,11 +5,11 @@
 let params = {
   "map": "Town",
   "disease": "Influenza",
-  "initialInfectedPercent": 3,
+  "initialInfectedPercent": 5,
   "masks": false,
   // "maskDelay": 0,
-  "maskPercent": 80, // Percentage of people that wear masks
-  "maskEffectiveness": 95,
+  "maskPercent": 75, // Percentage of people that wear masks
+  "maskEffectiveness": 90,
   "quarantine": false,
   // "quarDelay": 0,
   // "quarPercent": 95,
@@ -108,7 +108,7 @@ const sk = {
 
 let map; // Store the main map class, which runs all operations
 const fr = 30 // Define the frame rate
-const secondsPerStep = 0.1 // (0.5) Set how often a disease step will occur
+const secondsPerStep = 0.05 // (0.1) Set how often a disease step will occur
 let frameCounter = 0 // Create a counter to track how many frame have occured
 let currentStep = 0 // Create a counter track the current timestep
 let _p = null // Create a pointer to the p5 sketch

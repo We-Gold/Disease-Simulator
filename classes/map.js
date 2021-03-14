@@ -101,7 +101,7 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SI
     this.people.forEach((person) => {
       if(this.isHealthy(person)) {
         counts[person.location.type][0]++
-      } else {
+      } else if(this.isInfected(person)) {
         counts[person.location.type][1]++
       }
     })

@@ -5,6 +5,7 @@ function LineChart(params) {
   this.data = params.data // [[]]
   this.colors = params.colors
   this.lineLabels = params.lineLabels
+  this.axisLabels = params.axisLabels
   this.chartWidth = params.chartWidth
   this.w = params.w
   this.h = params.h
@@ -117,6 +118,10 @@ function LineChart(params) {
       this.p.strokeWeight(2)
       this.p.line(x, this.xLine + 3, x, this.xLine - 3)
     }
+    this.p.strokeWeight(1)
+    this.p.textAlign(this.p.CENTER)
+    this.p.fill(0)
+    this.p.text(this.axisLabels[0], (this.chartX + this.chartX + this.chartW - this.padding)/2, this.xLine + 3*this.p.textSize())
   }
 
   this.drawYAxisLabels = () => {
@@ -131,5 +136,14 @@ function LineChart(params) {
       this.p.strokeWeight(2)
       this.p.line(this.yLine + 3, y, this.yLine - 3, y)
     }
+
+    this.p.push()
+    this.p.translate(this.yLine - 3*this.p.textSize(), (this.chartY + this.chartY + this.chartH - this.padding)/2)
+    this.p.rotate(-this.p.PI/2)
+    this.p.strokeWeight(1)
+    this.p.textAlign(this.p.CENTER)
+    this.p.fill(0)
+    this.p.text(this.axisLabels[1], 0, 0)
+    this.p.pop()
   }
 }

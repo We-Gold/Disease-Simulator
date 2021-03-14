@@ -22,9 +22,10 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SI
     data: [[], [], [], []], // Stateful
     colors: ["#27A8F1", "#F03A5F", "#22BB33", "#000"],
     lineLabels: this.lineLabels[this.graphMode],
-    chartWidth: 200,
-    w: 225,
-    h: 225,
+    axisLabels: ["Weeks", "People"], // [x,y]
+    chartWidth: this.p.width * (4/10), //200,
+    w: this.p.width * (4.5/10), //225,
+    h: this.p.width * (4.5/10),
     x: 20,
     y: 20,
     xRange: [0, 5], // Weeks
@@ -35,6 +36,8 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SI
   this.chart = new LineChart(this.chartData)
 
   this.show = () => {
+    this.p.textSize(this.p.constrain(this.p.width/500 * 12, 12, 20))
+
     // Show background (img or color)
     this.p.background(this.background)
     
@@ -64,6 +67,8 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SI
   this.showImages = () => {
     const imageDistance = this.p.height / 6 // The distance between each image
     let i = 1
+    
+    const personCounts = this.getPersonCounts()
 
     this.p.imageMode(this.p.CORNER)
 
@@ -73,8 +78,35 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SI
         height: imageDistance * (3/4)
       }
       this.p.image(image, this.p.width * (6.5/10), imageDistance * i - (imageDistance / 2), newDims.width, newDims.height)
+
+      this.p.fill("#27A8F1")
+      this.p.text(`${personCounts[type][0]} healthy`, this.p.width * (5.5/10), imageDistance * i - (imageDistance / 2))
+
+      this.p.fill("#F03A5F")
+      this.p.text(`${personCounts[type][1]} infected`, this.p.width * (5.5/10), imageDistance * i - (imageDistance / 2) + this.p.textSize())
       i++
     }
+  }
+
+  this.getPersonCounts = () => {
+    // Healthy, Infected
+    let counts = {
+      homes: [0,0],
+      hospitals: [0,0],
+      entertainment: [0,0],
+      jobs: [0,0],
+      schools: [0,0]
+    }
+
+    this.people.forEach((person) => {
+      if(this.isHealthy(person)) {
+        counts[person.location.type][0]++
+      } else {
+        counts[person.location.type][1]++
+      }
+    })
+
+    return counts
   }
 
   this.step = () => {
@@ -145,7 +177,7 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SI
   }
 
   this.isInfected = (person) => person.isInfected()
-  this.isHealthy = (person) => (person.isUninfected() || person.isRecovered())
+  this.isHealthy = (person) => (person.isSusceptible() || person.isRecovered())
   this.isSusceptible = (person) => person.isSusceptible()
   this.isDead = (person) => person.isDead()
   this.isRecovered = (person) => person.isRecovered()

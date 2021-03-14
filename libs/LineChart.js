@@ -79,7 +79,7 @@ function LineChart(params) {
   this.drawLineLabels = () => {
     this.p.strokeWeight(0)
     this.p.textAlign(this.p.LEFT, this.p.BOTTOM)
-    this.p.textSize(12)
+    this.p.textSize(this.p.constrain(this.p.textSize(), 12, 18))
     
     let totalWidth = 0
     
@@ -110,10 +110,10 @@ function LineChart(params) {
       let label = this.p.map(i, 0, this.hAxisLabelCount - 1, this.xRange[0], this.xRange[1])
       this.p.strokeWeight(0)
       this.p.textAlign(this.p.CENTER)
-      this.p.textSize(10)
+      // this.p.textSize(10)
       this.p.fill(0)
       let x = this.p.map(label, this.xRange[0], this.xRange[1], this.chartX, this.chartX + this.chartW - this.padding)
-      this.p.text(this.p.round(label) + "", x, this.xLine + (this.padding * 0.6))
+      this.p.text(this.p.round(label) + "", x, this.xLine + 1.5*this.p.textSize())
       this.p.strokeWeight(2)
       this.p.line(x, this.xLine + 3, x, this.xLine - 3)
     }
@@ -124,7 +124,7 @@ function LineChart(params) {
       let label = this.p.map(i, 0, this.vAxisLabelCount - 1, this.yRange[0], this.yRange[1])
       this.p.strokeWeight(0)
       this.p.textAlign(this.p.RIGHT, this.p.CENTER)
-      this.p.textSize(10)
+      // this.p.textSize(10)
       this.p.fill(0)
       let y = (this.chartY + this.chartH) - this.p.map(label, this.yRange[0], this.yRange[1], this.chartY, this.chartY + this.chartH - this.padding)
       this.p.text(this.p.round(label) + "", this.yLine - (this.padding * 0.25), y)

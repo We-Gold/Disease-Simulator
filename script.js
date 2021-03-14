@@ -153,11 +153,11 @@ let updateHTMLWithParams = () => {
 let sketch = p => {
   p.preload = () => {
     images = {
-        house: p.loadImage('./assets/house.png'),
-        hospital: p.loadImage('./assets/hospital.png'),
+        homes: p.loadImage('./assets/house.png'),
+        hospitals: p.loadImage('./assets/hospital.png'),
         entertainment: p.loadImage('./assets/entertainment.png'),
-        job: p.loadImage('./assets/job.png'),
-        school: p.loadImage('./assets/school.png')
+        jobs: p.loadImage('./assets/job.png'),
+        schools: p.loadImage('./assets/school.png')
     }
   }
 

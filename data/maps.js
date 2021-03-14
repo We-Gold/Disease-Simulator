@@ -1,8 +1,7 @@
-let maps = {
+const maps = {
   "Town": {
     "initialPopulation": 200,
     "locations": {
-      // Later add graphics for each here or for all maps.
       "homes": 90, //90
       "jobs": 15, //15
       "schools": 1,
@@ -10,7 +9,18 @@ let maps = {
       "hospitals": 1 // 1
     },
     "background": "#C4C4C4"
+  },
+  "City": {
+    "initialPopulation": 1000,
+    "locations": {
+      "homes": 600, //90
+      "jobs": 150, //15
+      "schools": 3,
+      "entertainment": 30, //5
+      "hospitals": 2 // 1
+    },
+    "background": "#C4C4C4"
   }
 }
 
-let locationTypes = ["homes", "jobs", "schools", "entertainment", "hospitals"]
+const locationTypes = ["homes", "jobs", "schools", "entertainment", "hospitals"]

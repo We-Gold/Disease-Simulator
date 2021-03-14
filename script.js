@@ -49,12 +49,20 @@ let hide = (el) => {
 }
 
 let saveParams = () => {
-  localStorage.setItem("parameters", JSON.stringify(params))
+  try {
+    localStorage.setItem("parameters", JSON.stringify(params));
+  } catch(err) {
+    console.log(err);
+  }
 }
 
 let getParams = () => {
-  if(localStorage.getItem("parameters")) {
-    params = JSON.parse(localStorage.getItem("parameters"))
+  try {
+    if(localStorage.getItem("parameters")) {
+      params = JSON.parse(localStorage.getItem("parameters"))
+    } 
+  } catch(err) {
+    console.log(err);
   }
 }
 
@@ -104,6 +112,7 @@ const secondsPerStep = 0.1 // (0.5) Set how often a disease step will occur
 let frameCounter = 0 // Create a counter to track how many frame have occured
 let currentStep = 0 // Create a counter track the current timestep
 let _p = null // Create a pointer to the p5 sketch
+let images = {}
 
 function initializeSimulation(p) {
   // Reset the current step
@@ -119,7 +128,7 @@ function initializeSimulation(p) {
     }
   }
 
-  map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p, params.graphMode)
+  map = new DiseaseMap(params.map, locations, pop, maps[params.map].background, p, params.graphMode, images)
 
   // Create the initial population 
   for(let i = 0; i < maps[params.map].initialPopulation; i++) {
@@ -142,6 +151,16 @@ let updateHTMLWithParams = () => {
 
 // Instantiate and define the sketch
 let sketch = p => {
+  p.preload = () => {
+    images = {
+        house: p.loadImage('./assets/house.png'),
+        hospital: p.loadImage('./assets/hospital.png'),
+        entertainment: p.loadImage('./assets/entertainment.png'),
+        job: p.loadImage('./assets/job.png'),
+        school: p.loadImage('./assets/school.png')
+    }
+  }
+
   p.setup = () => {
     p.createCanvas(sk.w, sk.h)
     p.frameRate(fr)

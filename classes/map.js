@@ -1,4 +1,4 @@
-function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UIR") {
+function DiseaseMap(name, locations, people, background, p5sketch, graphMode="SIR", images) {
   this.name = name
   // Dictionary for storing locations associated by their type
   this.locations = locations
@@ -8,23 +8,26 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
 
   this.p = p5sketch
 
-  this.graphMode = graphMode // UIR, HID
+  this.graphMode = graphMode // SIR, HID
+
+  this.images = images
 
   this.lineLabels = {
-    "SIR": ["Susceptible", "Infected", "Removed"],
+    "SIR": ["Susceptible", "Infected", "Recovered", "Dead"],
     "HID": ["Healthy", "Infected", "Dead"]
   }
 
   // Healthy, Infected, Dead
   this.chartData = {
-    data: [[], [], []], // Stateful
-    colors: ["#27A8F1", "#F03A5F", "#000"],
+    data: [[], [], [], []], // Stateful
+    colors: ["#27A8F1", "#F03A5F", "#22BB33", "#000"],
     lineLabels: this.lineLabels[this.graphMode],
-    w: 200,
-    h: 200,
+    chartWidth: 200,
+    w: 225,
+    h: 225,
     x: 20,
     y: 20,
-    xRange: [0, 10], // Stateful
+    xRange: [0, 5], // Weeks
     yRange: [0, maps[this.name]["initialPopulation"]],
     p5sketch: this.p
   }
@@ -42,6 +45,8 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
     this.people.forEach(this.showPerson)
 
     this.chart.show()
+
+    this.showImages()
   }
 
   this.showAllLocations = () => {
@@ -54,6 +59,22 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
 
   this.showPerson = (person) => {
     person.show()
+  }
+
+  this.showImages = () => {
+    const imageDistance = this.p.height / 6 // The distance between each image
+    let i = 1
+
+    this.p.imageMode(this.p.CORNER)
+
+    for(const [type, image] of Object.entries(this.images)) {
+      const newDims = {
+        width: (imageDistance * (3/4)/image.height) * image.width,
+        height: imageDistance * (3/4)
+      }
+      this.p.image(image, this.p.width * (6.5/10), imageDistance * i - (imageDistance / 2), newDims.width, newDims.height)
+      i++
+    }
   }
 
   this.step = () => {
@@ -95,14 +116,16 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
 
     this.pushChartData(data)
 
-    if(currentStep >= this.chartData.xRange[1]) this.chartData.xRange[1]++
+    if(this.getWeeksFromSteps(currentStep) >= this.chartData.xRange[1]) this.chartData.xRange[1]++
   }
 
   this.pushChartData = (data) => {
-    this.chartData.data[0].push(this.p.createVector(currentStep - 1, data[0]))
-    this.chartData.data[1].push(this.p.createVector(currentStep - 1, data[1]))
-    this.chartData.data[2].push(this.p.createVector(currentStep - 1, data[2]))
+    for(let i = 0; i < data.length; i++) {
+      this.chartData.data[i].push(this.p.createVector(this.getWeeksFromSteps(currentStep - 1), data[i]))
+    }
   }
+
+  this.getWeeksFromSteps = (steps) => (steps * 3) / 7
 
   this.getHIDData = () => {
     return [
@@ -116,27 +139,23 @@ function DiseaseMap(name, locations, people, background, p5sketch, graphMode="UI
     return [
       this.countSusceptible(this.people),
       this.countInfected(this.people),
-      this.countRemoved(this.people)
+      this.countRecovered(this.people),
+      this.countDead(this.people)
     ]
   }
 
-  this.countInfected = (people) => people.filter(this.isInfected).reduce((count) => count + 1, 0)
-
   this.isInfected = (person) => person.isInfected()
-
-  this.countHealthy = (people) => people.filter(this.isHealthy).reduce((count) => count + 1, 0)
-
   this.isHealthy = (person) => (person.isUninfected() || person.isRecovered())
-
-  this.countSusceptible = (people) => people.filter(this.isSusceptible).reduce((count) => count + 1, 0)
-
   this.isSusceptible = (person) => person.isSusceptible()
-
-  this.countDead = (people) => people.filter(this.isDead).reduce((count) => count + 1, 0)
-
   this.isDead = (person) => person.isDead()
+  this.isRecovered = (person) => person.isRecovered()
+  this.isRemoved = (person) => (person.isDead() || person.isRecovered())
 
+  this.countInfected = (people) => people.filter(this.isInfected).reduce((count) => count + 1, 0)
+  this.countHealthy = (people) => people.filter(this.isHealthy).reduce((count) => count + 1, 0)
+  this.countSusceptible = (people) => people.filter(this.isSusceptible).reduce((count) => count + 1, 0)
+  this.countDead = (people) => people.filter(this.isDead).reduce((count) => count + 1, 0)
+  this.countRecovered = (people) => people.filter(this.isRecovered).reduce((count) => count + 1, 0)
   this.countRemoved = (people) => people.filter(this.isRemoved).reduce((count) => count + 1, 0)
 
-  this.isRemoved = (person) => (person.isDead() || person.isRecovered())
 }

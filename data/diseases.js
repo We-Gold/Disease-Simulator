@@ -1,6 +1,6 @@
 // replace each range with a method that provides a random number based on either randomness or a graph - function thingy
 
-let diseases = {
+const diseases = {
   "COVID-19": new Disease(1.5, 0.017, [10, 20], [10,18], [3, 14], 0.01),
   // {
   //   "infectionRate": 1.5,

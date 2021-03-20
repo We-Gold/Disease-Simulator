@@ -34,15 +34,17 @@ function Person(id, params, disease, map) {
 
     // Based on age generate a daily and weekend schedule
     if(this.age <= 18) {
-      // TODO tweak these with random changes to third locations and different entertainment places (or is randomly selected by different class)
-      this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("schools"), this.home)
+      if(Math.random() < 0.5) {
+        this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("schools"), this.home)
+      } else {
+        this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("schools"), this.getRandomLocation("jobs"))
+      }
+      
       this.weekendSchedule = new Schedule(this.home, this.getRandomLocation("entertainment"), this.home)
     } else if(this.age <= 60) {
-      // TODO tweak these with random changes to third locations and different entertainment places
       this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("jobs"), this.home) // 3rd maybe swapped with entertainment some days
       this.weekendSchedule = new Schedule(this.home, this.getRandomLocation("entertainment"), this.getRandomLocation("entertainment"))
     } else if(this.age <= 85) {
-      // TODO tweak these with random changes to third locations and different entertainment places
       this.weeklySchedule = new Schedule(this.home, this.getRandomLocation("entertainment"), this.home) // 3rd maybe swapped with a different home (family) some days
       this.weekendSchedule = new Schedule(this.home, this.getRandomLocation("entertainment"), this.home)
     }

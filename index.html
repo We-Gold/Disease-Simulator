@@ -3,59 +3,65 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Disease Simulation</title>
+    <title>Disease Simulator</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet"> 
-    <link rel="stylesheet" href="libs/switch.css">  
+    <link rel="stylesheet" href="components/switch.css">  
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body class="full-height flex">
+    <div id="modalArea">
+      <img id="infoImg" src="/assets/simulator-info.png" alt="Disease Spread Simulator Description">
+      <div id="modalBg"></div>
+    </div>
     <div id="sim-area" class="two-thirds gray-background full-height">
       <div id="sketch-container"></div>
     </div>
     <div id="params-area" class="one-third full-height">
       <div id="params-form">
-        <h1>Parameters</h1>
-        <p class="form-label">Select a map:</p>
+        <h1>Disease Simulator</h1>
+        <p class="desc-text">The following parameters control this simulator. Play around with them to see their effect on spread of the disease!</p>
+        <a id="infoLink">Click here for more information about this simulator.</a>
+        <p class="form-label">Select a location:</p>
         <select id="map" class="dropdown">
-          <option>Town</option>
-          <option>City</option>
+          <option value="Town">Town (200 People)</option>
+          <option value="City">City (1000 People)</option>
         </select>
         <p class="form-label form-margin">Select a disease:</p>
         <select id="disease" class="dropdown">
-          <option>Influenza</option>
           <option>COVID-19</option>
+          <option>Influenza</option>
         </select>
         <h2 class="form-margin">Factors</h2>
         <p class="form-label">Initial Infected Population (%)</p>
-        <input id="initialInfectedPercent" class="form-input" type="number" value="3">
+        <input id="initialInfectedPercent" class="form-input" type="number" value="5" min="1" max="100">
         <div class="switch-div form-margin">
-          <p class="form-label">Masks</p>
+          <p class="form-label">Most Wear Masks</p>
           <label class="switch">
             <input id="masks" type="checkbox">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="switch-div form-margin">
-          <p class="form-label">Quarantine</p>
+          <p class="form-label">Infected Quarantine</p>
           <label class="switch">
             <input id="quarantine" type="checkbox">
             <span class="slider round"></span>
           </label>
         </div>
-        <div class="switch-div form-margin">
+        <!-- <div class="switch-div form-margin">
           <p class="form-label">Vaccine</p>
           <label class="switch">
             <input id="vaccine" type="checkbox">
             <span class="slider round"></span>
           </label>
-        </div>
-        <h2 class="form-margin">Advanced</h2>
-        <p class="form-label">Vaccine Effectiveness (%)</p>
-        <input id="vaccEffectiveness" class="form-input" type="number" value="80.5">
-        <p class="form-label form-margin">Medical Care Capacity</p>
-        <input id="medCareCapacity" class="form-input" type="number" value="135">
+        </div> -->
+        <!-- <h2 class="form-margin">Advanced</h2> -->
+        <!-- <p class="form-label">Vaccine Effectiveness (%)</p>
+        <input id="vaccEffectiveness" class="form-input" type="number" value="80.5"> -->
+        <!-- <p class="form-label form-margin">Medical Care Capacity</p> -->
+        <!-- <input id="medCareCapacity" class="form-input" type="number" value="135"> -->
         <button id="beginSimButton" class="form-button">Begin Simulation</button>
         <div class="btn-group">
           <button class="left-button" id="toggleSimButton">Pause</button>
@@ -64,7 +70,8 @@
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
-    <script src="libs/LineChart.js"></script>
+    <script src="components/LineChart.js"></script>
+    <script src="components/PieChart.js"></script>
     <script src="classes/disease.js"></script>
     <script src="data/diseases.js"></script>
     <script src="data/maps.js"></script>

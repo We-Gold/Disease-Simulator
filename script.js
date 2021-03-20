@@ -1,10 +1,7 @@
-// TODO replace params with immutable usage (send copies when sim starts)
-// TODO replace arguments with objects and use getters and setters
-
 // Create a model for storing configuration data
 let params = {
   "map": "Town",
-  "disease": "Influenza",
+  "disease": "COVID-19",
   "initialInfectedPercent": 5,
   "masks": false,
   // "maskDelay": 0,
@@ -13,11 +10,11 @@ let params = {
   "quarantine": false,
   // "quarDelay": 0,
   // "quarPercent": 95,
-  "vaccine": false,
+  // "vaccine": false,
   // "vaccDelay": 300,
   // "vaccPercent": 99,
-  "vaccEffectiveness": 85.63,
-  "medCareCapacity": 135,
+  // "vaccEffectiveness": 85.63,
+  // "medCareCapacity": 135,
   "graphMode": "SIR"
 }
 
@@ -69,7 +66,7 @@ let getParams = () => {
 function beginSimButtonFunc() {
   Object.keys(params).filter((key) => {
     return !["maskEffectiveness", "maskPercent", "graphMode"].includes(key)}).forEach((key) => {
-      params[key] = ["masks", "quarantine", "vaccine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
+      params[key] = ["masks", "quarantine"].includes(key) ? document.getElementById(key).checked : document.getElementById(key).value
   })
 
   saveParams()
@@ -96,6 +93,14 @@ document.getElementById("beginSimButton").addEventListener('click', beginSimButt
 document.getElementById("toggleSimButton").addEventListener('click', toggleSimButtonFunc)
 
 document.getElementById("endSimButton").addEventListener('click', endSimButtonFunc)
+
+document.getElementById("modalArea").addEventListener('click', () => {
+  document.getElementById("modalArea").style.display = "none"
+})
+
+document.getElementById("infoLink").addEventListener('click', () => {
+  document.getElementById("modalArea").style.display = "block"
+})
 
 // The location where the sketch will be created:
 let simArea = document.getElementById('sim-area')
@@ -140,7 +145,7 @@ function initializeSimulation(p) {
 let updateHTMLWithParams = () => {
   Object.keys(params).filter((key) => {
     return !["maskEffectiveness", "maskPercent", "graphMode"].includes(key)}).forEach((key) => {
-      if(["masks", "quarantine", "vaccine"].includes(key)) {
+      if(["masks", "quarantine"].includes(key)) {
         document.getElementById(key).checked = params[key]
       }
       else {
